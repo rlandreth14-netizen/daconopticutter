@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dacon OptiCutter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:  #1a3a5c;
+  --navy2: #0f2640;
+  --navy3: #243f6a;
+  --blue:  #2c6fad;
+  --blue2: #3a85cc;
+  --sky:   #eef4fa;
+  --sky2:  #daeaf6;
+  --sky3:  #c4d8ec;
+  --bg:    #eef3f9;
+  --white: #ffffff;
+  --bdr:   #ccdaea;
+  --bdr2:  #a8c4de;
+  --text:  #1a2f45;
+  --text2: #3a5a78;
+  --muted: #7a9ab5;
+  --green: #0c9e6a;
+  --red:   #d03050;
+  --yel:   #e8960a;
+  --ora:   #d96010;
+  --sh:    0 2px 8px rgba(26,58,92,.08);
+  --sh2:   0 4px 20px rgba(26,58,92,.13);
+}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh}
+
+/* ── HEADER ── */
+.hdr{background:var(--navy2);border-bottom:3px solid var(--blue);padding:0 30px;height:66px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30;box-shadow:0 3px 14px rgba(0,0,0,.22)}
+.brand{display:flex;align-items:center;gap:14px}
+.logo-wrap{background:#fff;border-radius:6px;padding:5px 10px;height:44px;display:flex;align-items:center}
+.logo-wrap svg{height:34px;width:auto}
+.hdiv{width:1px;height:30px;background:rgba(255,255,255,.15)}
+.bname{font-family:'Barlow Condensed',sans-serif;font-size:23px;font-weight:800;letter-spacing:1px;color:#fff;line-height:1}
+.bname span{color:var(--blue2)}
+.bsub{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.5px;margin-top:2px}
+.kpill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:3px 11px;font-size:12px;color:rgba(255,255,255,.65)}
+.kpill b{color:#fff}
+.hright{display:flex;align-items:center;gap:10px}
+.spill{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.55);background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:4px 11px}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.sdot.saving{background:var(--yel);animation:blink .8s infinite}
+.sdot.err{background:var(--red)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── LAYOUT ── */
+.main{padding:26px 30px;max-width:1080px;margin:0 auto}
+
+/* ── MATERIAL BLOCK ── */
+.mat-block{
+  border-radius:14px;overflow:hidden;
+  box-shadow:var(--sh2);margin-bottom:22px;
+  border:1px solid var(--bdr);
+}
+.mat-block-cap{
+  background:var(--navy);padding:14px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mat-cap-left{display:flex;align-items:center;gap:12px}
+.mat-num{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);
+  font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;
+  color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.mat-cap-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:800;
+  color:#fff;letter-spacing:.5px;
+}
+.mat-cap-subtitle{font-size:12px;color:rgba(255,255,255,.5);margin-top:1px}
+.mat-body{background:var(--white);padding:20px 22px}
+
+/* ── MATERIAL SELECTOR AREA ── */
+.mat-select-row{display:flex;gap:12px;align-items:flex-end;margin-bottom:16px}
+.mat-select-row .sel-wrap{flex:1}
+.sz-info-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.sz-badge{background:var(--sky);border:1px solid var(--bdr2);border-radius:7px;padding:6px 13px}
+.sz-badge .sl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:1px}
+.sz-badge .sv{font-size:13px;font-weight:700;color:var(--blue)}
+.sz-auto-note{font-size:11px;color:var(--muted);align-self:center}
+
+/* ── DIVIDER inside block ── */
+.block-divider{
+  border:none;border-top:2px dashed var(--sky2);
+  margin:4px 0 18px 0;
+}
+
+/* ── PIECES TABLE ── */
+.pieces-label{
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.pieces-label::after{content:'';flex:1;height:1px;background:var(--sky2)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:6px 7px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:2px solid var(--sky2)}
+td{padding:4px 6px;border-bottom:1px solid var(--sky);vertical-align:middle}
+td input{padding:6px 9px;font-size:13px}
+tr:last-child td{border-bottom:none}
+
+/* ── INPUTS ── */
+.lbl{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+input[type=text],input[type=number],select{
+  width:100%;background:var(--sky);border:1px solid var(--bdr);
+  color:var(--text);border-radius:7px;padding:7px 11px;
+  font-family:'Barlow',sans-serif;font-size:13px;outline:none;
+  transition:border-color .15s,background .15s;
+  -webkit-appearance:none;appearance:none;
+}
+input:focus,select:focus{border-color:var(--blue);background:#fff}
+input[type=number]::-webkit-inner-spin-button{opacity:.3}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath fill='%237a9ab5' d='M5 7L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;
+  padding-right:30px;cursor:pointer;
+}
+select option{background:#fff}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:8px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.5px;transition:all .15s}
+.btn:hover{opacity:.87;transform:translateY(-1px)}.btn:active{transform:scale(.97)}
+.btn-navy{background:var(--navy);color:#fff;font-size:14px;padding:9px 18px}
+.btn-navy:hover{background:var(--navy3);opacity:1}
+.btn-out{background:#fff;border:1.5px solid var(--bdr2);color:var(--text2);font-size:13px;padding:8px 14px}
+.btn-out:hover{border-color:var(--blue);color:var(--blue);opacity:1}
+.btn-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 5px;transition:color .15s;line-height:1}
+.btn-del:hover{color:var(--red)}
+.btn-sm-gr{background:var(--green);border:none;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;font-weight:600;font-family:'Barlow',sans-serif}
+.btn-sm-bl{background:var(--blue);border:none;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px;font-family:'Barlow',sans-serif}
+.btn-add-piece{
+  margin-top:10px;background:var(--sky);border:1.5px dashed var(--bdr2);
+  color:var(--text2);border-radius:8px;padding:7px 14px;cursor:pointer;
+  font-family:'Barlow',sans-serif;font-size:13px;transition:all .15s;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-add-piece:hover{background:var(--sky2);border-color:var(--blue);color:var(--blue)}
+
+/* ── ADD MATERIAL BUTTON ── */
+.add-mat-wrap{margin-bottom:22px}
+.add-mat-btn{
+  width:100%;background:var(--white);border:2px dashed var(--bdr2);
+  border-radius:14px;padding:16px;cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;
+  color:var(--text2);letter-spacing:.5px;transition:all .18s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:var(--sh);
+}
+.add-mat-btn:hover{background:var(--sky);border-color:var(--blue);color:var(--blue);border-style:solid}
+.add-mat-icon{width:28px;height:28px;border-radius:50%;background:var(--sky2);display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s}
+.add-mat-btn:hover .add-mat-icon{background:var(--blue2);color:#fff}
+
+/* ── REMOVE MAT (in header) ── */
+.btn-remove-mat{
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.8);border-radius:7px;padding:5px 12px;
+  cursor:pointer;font-size:12px;font-family:'Barlow',sans-serif;
+  transition:all .15s;
+}
+.btn-remove-mat:hover{background:rgba(255,50,50,.3);border-color:rgba(255,100,100,.4);color:#fff}
+
+/* ── CALCULATE ── */
+.calc-bar{
+  background:var(--white);border:1px solid var(--bdr);border-radius:12px;
+  padding:18px 22px;box-shadow:var(--sh);
+  display:flex;gap:16px;align-items:center;margin-bottom:22px;
+}
+.btn-calc{
+  flex:1;background:linear-gradient(135deg,var(--navy2),var(--navy3));
+  color:#fff;font-size:20px;padding:16px;border-radius:10px;
+  letter-spacing:2px;border:none;cursor:pointer;
+  font-family:'Barlow Condensed',sans-serif;font-weight:800;
+  transition:all .2s;box-shadow:0 4px 14px rgba(26,58,92,.28);
+}
+.btn-calc:hover{filter:brightness(1.12);box-shadow:0 6px 22px rgba(26,58,92,.38);transform:translateY(-1px)}
+.calc-note{font-size:12px;color:var(--muted);flex-shrink:0;max-width:155px;line-height:1.5}
+
+/* ── ERROR ── */
+.err{background:#fff5f7;border:1.5px solid var(--red);border-radius:8px;padding:10px 14px;color:var(--red);font-size:13px;margin-bottom:16px}
+.warn{background:#fffbf0;border:1px solid var(--yel);border-radius:7px;padding:8px 12px;font-size:12px;color:var(--ora);margin-top:8px}
+
+/* ── RESULTS SHELL ── */
+.results-shell{border-radius:14px;overflow:hidden;box-shadow:var(--sh2);border:1px solid var(--bdr);margin-bottom:8px}
+.results-hdr{background:var(--navy2);padding:16px 22px;display:flex;align-items:center;justify-content:space-between}
+.results-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:1px}
+.res-acts{display:flex;gap:8px}
+.btn-exp{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:7px;padding:7px 14px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;transition:background .15s}
+.btn-exp:hover{background:rgba(255,255,255,.24)}
+
+/* ── PRICING SUMMARY ── */
+.pricing-wrap{background:var(--white);padding:22px}
+.pricing-ttl{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.pricing-ttl::after{content:'';flex:1;height:1px;background:var(--sky2)}
+
+/* result card per material */
+.pres-card{
+  background:var(--sky);border:1.5px solid var(--bdr2);border-radius:12px;
+  padding:16px 20px;margin-bottom:12px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  flex-wrap:wrap;
+}
+.pres-left{}
+.pres-name{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.pres-thk{font-size:13px;color:var(--muted);font-weight:400;margin-left:6px}
+.pres-sizes{display:flex;gap:7px;flex-wrap:wrap}
+.pres-size-chip{background:#fff;border:1px solid var(--bdr);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--text2)}
+.pres-size-chip b{color:var(--navy)}
+.pres-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.pres-count{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:800;color:var(--navy);line-height:1}
+.pres-unit{font-size:13px;color:var(--muted);margin-top:4px}
+.pres-warn{font-size:11px;color:var(--red);margin-top:6px}
+
+/* copy */
+.copy-btn{background:#fff;border:1px solid var(--bdr2);color:var(--muted);border-radius:6px;padding:5px 12px;cursor:pointer;font-size:12px;font-family:'Barlow',sans-serif;transition:all .15s;white-space:nowrap}
+.copy-btn:hover{color:var(--blue);border-color:var(--blue)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+
+/* stats strip */
+.stats-strip{display:flex;gap:10px;background:var(--sky);border-top:1px solid var(--bdr);padding:14px 22px}
+.stat-c{background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:9px 16px;flex:1;text-align:center}
+.stat-l{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.stat-v{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:800;color:var(--navy)}
+
+/* per-material detail section */
+.detail-section{background:var(--white);border-top:2px solid var(--sky2);padding:22px}
+.ds-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.ds-bar{width:4px;height:20px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.sheet-vis{background:var(--sky);border:1px solid var(--bdr2);border-radius:10px;padding:14px;margin-bottom:12px}
+.sv-title{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:10px}
+.sheet-canvas{position:relative;border:1.5px solid var(--bdr2);border-radius:6px;overflow:hidden;background:#d4e5f0;flex-shrink:0}
+.piece-rect{position:absolute;box-sizing:border-box;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.piece-rect:hover{opacity:.82;z-index:2}
+.plbl{color:#fff;font-weight:700;text-align:center;line-height:1.2;text-shadow:0 1px 3px #0007;user-select:none;pointer-events:none}
+.legend-item{display:flex;align-items:center;gap:7px;margin-bottom:5px;font-size:12px;color:var(--text2)}
+.ldot{width:11px;height:11px;border-radius:3px;flex-shrink:0}
+
+/* full table */
+.full-table-wrap{background:#fff;border-top:1px solid var(--bdr);padding:22px;border-radius:0 0 14px 14px}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(10,22,38,.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
+.modal{background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.22);width:100%;max-width:840px;max-height:92vh;overflow-y:auto}
+.modal-hdr{background:var(--navy2);border-radius:16px 16px 0 0;padding:18px 24px;display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:800;color:#fff}
+.modal-x{background:none;border:none;color:rgba(255,255,255,.6);font-size:24px;cursor:pointer;transition:color .15s}
+.modal-x:hover{color:#fff}
+.modal-body{padding:22px 24px}
+.modal-sub{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.5}
+.lib-entry{background:var(--sky);border:1px solid var(--bdr);border-radius:10px;padding:13px 15px;margin-bottom:11px}
+.le-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.le-name{font-size:15px;font-weight:700;color:var(--navy)}
+.le-meta{font-size:12px;color:var(--muted)}
+.sizes-edit{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.se-box{background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:12px}
+.se-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:9px}
+.se-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.edit-basic{background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:12px;margin-bottom:10px}
+.edit-basic-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.add-form{background:var(--sky);border:1.5px dashed var(--bdr2);border-radius:10px;padding:16px;margin-top:10px}
+.add-form-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:11px}
+.af-row1{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin-bottom:9px}
+.af-row2{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr 1fr auto;gap:9px;align-items:end}
+
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}
+.flex{display:flex}.gap8{gap:8px}.gap12{gap:12px}.aic{align-items:center}.jsb{justify-content:space-between}
+.w100{width:100%}
+@media print{.no-print{display:none!important}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr no-print">
+  <div class="brand">
+    <div class="logo-wrap">
+      <svg viewBox="0 0 120 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="120" height="32" rx="2" fill="#1a3a5c"/>
+        <text x="7" y="24" font-family="Arial Black,sans-serif" font-size="23" font-weight="900" fill="white" letter-spacing="0.5">DACON</text>
+        <polygon points="68,7 76,16 68,25 60,16" fill="white" opacity="0.18"/>
+        <polygon points="68,10 74,16 68,22 62,16" fill="white" opacity="0.38"/>
+        <text x="8" y="43" font-family="Arial,sans-serif" font-size="8" fill="#1a3a5c" letter-spacing="1.8">FABRICATIONS LTD</text>
+      </svg>
+    </div>
+    <div class="hdiv"></div>
+    <div>
+      <div class="bname">OPTI<span>CUTTER</span></div>
+      <div class="bsub">Sheet Metal Cut Optimizer</div>
+    </div>
+  </div>
+  <div class="hright">
+    <div class="kpill">Blade kerf <b>20mm fixed</b></div>
+    <div class="spill"><div class="sdot" id="sdot"></div><span id="stxt">Library synced</span></div>
+    <button class="btn btn-out" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:#fff" onclick="openLib()">📦 Stock Library</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- Material blocks -->
+  <div id="mat-blocks"></div>
+
+  <!-- Add material -->
+  <div class="add-mat-wrap no-print" id="add-mat-wrap">
+    <button class="add-mat-btn" onclick="addMat()">
+      <div class="add-mat-icon">+</div>
+      Add Another Material to This Job
+    </button>
+  </div>
+
+  <!-- Calculate -->
+  <div class="calc-bar no-print">
+    <button class="btn-calc" onclick="calculate()">✂ CALCULATE ALL LAYOUTS</button>
+    <div class="calc-note">Each material is calculated independently. Results show sheets needed per material.</div>
+  </div>
+
+  <div class="err no-print" id="err-box" style="display:none"></div>
+
+  <!-- Results -->
+  <div id="output" style="display:none">
+    <div class="results-shell">
+
+      <div class="results-hdr">
+        <div class="results-title">📋 Sheet Usage — for Pricing</div>
+        <div class="res-acts">
+          <button class="btn-exp" onclick="exportBC()">📤 Export for BC</button>
+          <button class="btn-exp" onclick="exportCSV()">⬇ CSV</button>
+          <button class="btn-exp" onclick="window.print()">🖨 Print</button>
+        </div>
+      </div>
+
+      <!-- One card per material -->
+      <div class="pricing-wrap">
+        <div class="pricing-ttl">Sheets required per material</div>
+        <div id="pricing-cards"></div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button class="copy-btn" id="copy-btn" onclick="copyQuote()">📋 Copy summary for quote</button>
+        </div>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-c"><div class="stat-l">Total Sheets</div><div class="stat-v" id="s-sheets">—</div></div>
+        <div class="stat-c"><div class="stat-l">Total Pieces</div><div class="stat-v" id="s-placed">—</div></div>
+        <div class="stat-c"><div class="stat-l">Unplaced</div><div class="stat-v" id="s-unplaced">—</div></div>
+        <div class="stat-c"><div class="stat-l">Avg Waste</div><div class="stat-v" id="s-waste">—</div></div>
+      </div>
+
+      <!-- Per-material visual layouts -->
+      <div id="mat-visuals"></div>
+
+      <!-- Full placement table -->
+      <div class="full-table-wrap">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:12px">Full Placement Table</div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>Material</th><th>Sheet #</th><th>Sheet Size</th><th>Label</th><th>W</th><th>H</th><th>X</th><th>Y</th><th>Rotated</th></tr></thead>
+            <tbody id="placement-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIBRARY MODAL -->
+<div class="overlay" id="lib-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title">📦 Stock Panel Library</div>
+      <button class="modal-x" onclick="closeLib()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-sub">Each material has two sheet sizes. The optimizer picks whichever wastes less on each sheet. Changes are saved and shared across your whole team.</p>
+      <div id="lib-entries"></div>
+      <div class="add-form mt12">
+        <div class="add-form-title">➕ Add New Material</div>
+        <div class="af-row1">
+          <div><label class="lbl">Material Name *</label><input type="text" id="n-name" placeholder="e.g. Stainless Steel 2mm"/></div>
+          <div><label class="lbl">Material Type</label><input type="text" id="n-mat" placeholder="Stainless Steel"/></div>
+          <div><label class="lbl">Thickness</label><input type="text" id="n-thk" placeholder="2mm"/></div>
+        </div>
+        <div class="af-row2">
+          <div><label class="lbl">Size 1 W *</label><input type="number" id="n-w1" placeholder="2500"/></div>
+          <div><label class="lbl">Size 1 H *</label><input type="number" id="n-h1" placeholder="1250"/></div>
+          <div><label class="lbl">Size 1 BC No.</label><input type="text" id="n-bc1" placeholder="e.g. STE-1004"/></div>
+          <div><label class="lbl">Size 2 W</label><input type="number" id="n-w2" placeholder="2000"/></div>
+          <div><label class="lbl">Size 2 H</label><input type="number" id="n-h2" placeholder="1000"/></div>
+          <div><label class="lbl">Size 2 BC No.</label><input type="text" id="n-bc2" placeholder="optional"/></div>
+          <div><button class="btn btn-navy" style="padding:8px 14px;margin-top:18px" onclick="addLibEntry()">+ Add</button></div>
+        </div>
+      </div>
+      <div class="flex gap8 mt20" style="justify-content:flex-end">
+        <button class="btn btn-out" onclick="closeLib()" style="padding:10px 20px;font-size:14px">Cancel</button>
+        <button class="btn btn-navy" style="padding:10px 26px;font-size:14px" onclick="saveLibClose()">💾 Save Library</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const KERF = 20;
+const STOR = 'dacon-v5';
+const COLORS = ['#1a6bbf','#0c9e6a','#e8960a','#c03050','#7c4ddb','#d9600a','#0891b2','#65a30d','#be185d','#0f766e','#1d4ed8','#b45309','#7e22ce','#15803d','#b91c1c'];
+
+let library = [];
+let pending = [];
+let calcResult = null;
+
+// Each mat entry: { id, selectedMatId, pieces: [{w,h,qty,label}] }
+let mats = [
+  { id: 'mat-1', selectedMatId: null, pieces: [{ w:'', h:'', qty:1 }] }
+];
+
+// ── STORAGE ──────────────────────────────────
+async function loadLib() {
+  setSS('saving', 'Loading…');
+  try {
+    let data = null;
+    if (window.storage) {
+      const r = await window.storage.get(STOR, true);
+      data = r && r.value ? JSON.parse(r.value) : null;
+    } else {
+      const s = localStorage.getItem(STOR);
+      data = s ? JSON.parse(s) : null;
+    }
+    library = data || defaultLib();
+    if (!data) await saveData(library);
+    setSS('ok', 'Library synced');
+  } catch(e) { library = defaultLib(); setSS('err', 'Local only'); }
+  renderAll();
+}
+async function saveData(lib) {
+  if (window.storage) await window.storage.set(STOR, JSON.stringify(lib), true);
+  else localStorage.setItem(STOR, JSON.stringify(lib));
+}
+async function persistLib(lib) {
+  setSS('saving', 'Saving…');
+  try { await saveData(lib); setSS('ok', 'Library synced'); }
+  catch(e) { setSS('err', 'Save failed'); }
+}
+function setSS(state, txt) {
+  document.getElementById('sdot').className = 'sdot ' + state;
+  document.getElementById('stxt').textContent = txt;
+}
+function defaultLib() {
+  // size1bc / size2bc = BC item numbers for each sheet size
+  return [
+    // MILD STEEL
+    { id:10, name:'Mild Steel 2mm',              material:'Mild Steel',      thickness:'2mm',   grade:'',
+      size1:{w:2450,h:1150,bc:'STE-1004'}, size2:{w:2050,h:900,bc:'STE-1005'} },
+    { id:11, name:'Mild Steel 3mm',              material:'Mild Steel',      thickness:'3mm',   grade:'',
+      size1:{w:2450,h:1150,bc:'STE-1008'}, size2:{w:1950,h:900,bc:'STE-1007'} },
+    // STAINLESS STEEL — 2mm
+    { id:20, name:'S/S 2mm — 304 Brushed',       material:'Stainless Steel', thickness:'2mm',   grade:'304 Brushed',
+      size1:{w:2450,h:1150,bc:'STST-1042'}, size2:{w:1950,h:900,bc:'STST-1028'} },
+    { id:21, name:'S/S 2mm — 304',               material:'Stainless Steel', thickness:'2mm',   grade:'304',
+      size1:{w:2450,h:1150,bc:'STST-1017'}, size2:{w:1950,h:900,bc:'STST-1025'} },
+    { id:22, name:'S/S 2mm — 316 Brushed',       material:'Stainless Steel', thickness:'2mm',   grade:'316 Brushed',
+      size1:{w:2450,h:1150,bc:'STST-1002'}, size2:{w:1950,h:900,bc:'STST-1014'} },
+    { id:23, name:'S/S 2mm — 316 Orbit',         material:'Stainless Steel', thickness:'2mm',   grade:'316 Orbit',
+      size1:{w:2450,h:1150,bc:'STST-1001'}, size2:{w:1950,h:900,bc:'STST-1003'} },
+    // STAINLESS STEEL — 2.5mm
+    { id:24, name:'S/S 2.5mm — 316 Brushed',     material:'Stainless Steel', thickness:'2.5mm', grade:'316 Brushed',
+      size1:{w:2450,h:1150,bc:''}, size2:{w:1950,h:900,bc:'STST-1013'} },
+    { id:25, name:'S/S 2.5mm — 316 Orbit',       material:'Stainless Steel', thickness:'2.5mm', grade:'316 Orbit',
+      size1:{w:2450,h:1150,bc:''}, size2:{w:1950,h:900,bc:'STST-1011'} },
+    // GALVANISED
+    { id:30, name:'Galv 2mm',                    material:'Galvanised',      thickness:'2mm',   grade:'',
+      size1:{w:2450,h:1150,bc:''}, size2:{w:1950,h:900,bc:'GALV-01004'} },
+    { id:31, name:'Galv 3mm',                    material:'Galvanised',      thickness:'3mm',   grade:'',
+      size1:{w:2450,h:1150,bc:'GALV-01002'}, size2:{w:1950,h:900,bc:'GALV-01001'} },
+    // ALUMINIUM
+    { id:40, name:'Aluminium 3mm',               material:'Aluminium',       thickness:'3mm',   grade:'',
+      size1:{w:2450,h:1150,bc:'ALI-1002'}, size2:{w:'',h:'',bc:''} },
+  ];
+}
+
+// ── RENDER ALL MAT BLOCKS ─────────────────────
+function renderAll() {
+  const wrap = document.getElementById('mat-blocks');
+  wrap.innerHTML = mats.map((m, idx) => buildBlock(m, idx)).join('');
+  document.getElementById('add-mat-wrap').style.display = mats.length >= 5 ? 'none' : 'block';
+}
+
+function buildBlock(m, idx) {
+  const libMat = library.find(l => l.id == m.selectedMatId);
+  const opts = library.map(l =>
+    `<option value="${l.id}" ${m.selectedMatId==l.id?'selected':''}>${l.name}${l.thickness?' · '+l.thickness:''}</option>`
+  ).join('');
+
+  // size info
+  let sizeHtml = '';
+  if (libMat) {
+    sizeHtml = `
+      <div class="sz-info-row">
+        <div class="sz-badge"><span class="sl">Size 1${libMat.size1.bc?' · '+libMat.size1.bc:''}</span><span class="sv">${libMat.size1.w} × ${libMat.size1.h} mm</span></div>
+        ${libMat.size2&&libMat.size2.w&&libMat.size2.h
+          ? `<div class="sz-badge"><span class="sl">Size 2${libMat.size2.bc?' · '+libMat.size2.bc:''}</span><span class="sv">${libMat.size2.w} × ${libMat.size2.h} mm</span></div>`
+          : `<div class="sz-badge" style="opacity:.4"><span class="sl">Size 2</span><span class="sv" style="color:var(--muted)">Not set</span></div>`}
+        <div class="sz-auto-note">Optimizer picks best size per sheet</div>
+      </div>`;
+  }
+
+  // pieces rows
+  const pRows = m.pieces.map((p, pi) => `
+    <tr>
+      <td style="color:var(--muted);font-size:12px;width:26px">${pi+1}</td>
+      <td><input type="number" value="${p.w}"   placeholder="500" style="width:88px" onchange="updatePiece('${m.id}',${pi},'w',+this.value)"/></td>
+      <td><input type="number" value="${p.h}"   placeholder="300" style="width:88px" onchange="updatePiece('${m.id}',${pi},'h',+this.value)"/></td>
+      <td><input type="number" value="${p.qty}" min="1"           style="width:58px" onchange="updatePiece('${m.id}',${pi},'qty',Math.max(1,+this.value))"/></td>
+      <td><button class="btn-del" onclick="removePiece('${m.id}',${pi})">✕</button></td>
+    </tr>`).join('');
+
+  return `
+    <div class="mat-block no-print" id="block-${m.id}">
+      <div class="mat-block-cap">
+        <div class="mat-cap-left">
+          <div class="mat-num">${idx+1}</div>
+          <div>
+            <div class="mat-cap-title">
+              Material ${idx+1}${libMat ? ' — ' + libMat.name : ''}
+            </div>
+            <div class="mat-cap-subtitle">Select material then enter the pieces to cut from it</div>
+          </div>
+        </div>
+        ${mats.length > 1
+          ? `<button class="btn-remove-mat" onclick="removeMat('${m.id}')">✕ Remove</button>`
+          : ''}
+      </div>
+
+      <div class="mat-body">
+        <!-- Material selector -->
+        <div class="mat-select-row">
+          <div class="sel-wrap">
+            <label class="lbl">Select material from library</label>
+            <select onchange="onMatSelect('${m.id}', this.value)">
+              <option value="">— Choose a material —</option>
+              ${opts}
+            </select>
+          </div>
+          <button class="btn btn-out" onclick="openLib()" style="white-space:nowrap;flex-shrink:0">+ Add to Library</button>
+        </div>
+
+        ${sizeHtml}
+
+        <hr class="block-divider"/>
+
+        <!-- Pieces -->
+        <div class="pieces-label">Required Pieces for This Material</div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead><tr><th>#</th><th>Width (mm)</th><th>Height (mm)</th><th>Qty</th><th></th></tr></thead>
+            <tbody id="ptbody-${m.id}">${pRows}</tbody>
+          </table>
+        </div>
+        <button class="btn-add-piece" onclick="addPiece('${m.id}')">+ Add Piece</button>
+      </div>
+    </div>`;
+}
+
+// ── MAT MANAGEMENT ────────────────────────────
+function addMat() {
+  mats.push({ id:'mat-'+Date.now(), selectedMatId:null, pieces:[{w:'',h:'',qty:1,label:''}] });
+  renderAll();
+}
+function removeMat(id) {
+  if (mats.length <= 1) return;
+  mats = mats.filter(m => m.id !== id);
+  renderAll();
+}
+function onMatSelect(id, val) {
+  const m = mats.find(m => m.id === id);
+  if (m) { m.selectedMatId = val ? parseInt(val) : null; renderAll(); }
+}
+
+// ── PIECE MANAGEMENT ─────────────────────────
+function addPiece(matId) {
+  const m = mats.find(m => m.id === matId);
+  if (m) { m.pieces.push({w:'',h:'',qty:1}); renderAll(); }
+}
+function removePiece(matId, pi) {
+  const m = mats.find(m => m.id === matId);
+  if (m && m.pieces.length > 1) { m.pieces.splice(pi,1); renderAll(); }
+}
+function updatePiece(matId, pi, field, val) {
+  const m = mats.find(m => m.id === matId);
+  if (m) m.pieces[pi][field] = val;
+}
+
+// ── ALGORITHM ─────────────────────────────────
+// ── MAXRECTS FREE-PLACEMENT PACKING ENGINE ──────
+// No guillotine constraint — pieces can be placed anywhere freely,
+// matching how a CNC turret punch press actually cuts sheets.
+// Uses the MaxRects Best Area Fit algorithm.
+
+function rectIntersects(a, b) {
+  return !(a.x+a.w <= b.x || b.x+b.w <= a.x || a.y+a.h <= b.y || b.y+b.h <= a.y);
+}
+
+function splitFreeRect(fr, px, py, pw, ph) {
+  // Split a free rect around a placed piece — produces up to 4 new free rects
+  const res = [];
+  if (px > fr.x)
+    res.push({x:fr.x, y:fr.y, w:px-fr.x, h:fr.h});
+  if (px+pw < fr.x+fr.w)
+    res.push({x:px+pw, y:fr.y, w:(fr.x+fr.w)-(px+pw), h:fr.h});
+  if (py > fr.y)
+    res.push({x:fr.x, y:fr.y, w:fr.w, h:py-fr.y});
+  if (py+ph < fr.y+fr.h)
+    res.push({x:fr.x, y:py+ph, w:fr.w, h:(fr.y+fr.h)-(py+ph)});
+  return res;
+}
+
+function pruneFreeRects(rects) {
+  // Remove any rect fully contained within another
+  return rects.filter((r, i) =>
+    r.w > 0 && r.h > 0 &&
+    !rects.some((s, j) => j !== i &&
+      s.x <= r.x && s.y <= r.y &&
+      s.x+s.w >= r.x+r.w && s.y+s.h >= r.y+r.h)
+  );
+}
+
+function maxRectsPack(sheetW, sheetH, queue) {
+  const placed = [];
+  let rem = [...queue];
+  let free = [{x:0, y:0, w:sheetW, h:sheetH}];
+
+  let improved = true;
+  while (improved && rem.length > 0) {
+    improved = false;
+    let bestScore = Infinity, bestI = -1, bestFit = null;
+
+    for (let i = 0; i < rem.length; i++) {
+      const pc = rem[i];
+      const orientations = [{pw:pc.w, ph:pc.h, rot:false}];
+      if (pc.w !== pc.h) orientations.push({pw:pc.h, ph:pc.w, rot:true});
+
+      for (const {pw, ph, rot} of orientations) {
+        for (const r of free) {
+          if (pw <= r.w && ph <= r.h) {
+            // Best Area Fit: prefer rect that wastes least space
+            const score = r.w * r.h - pw * ph;
+            if (score < bestScore) {
+              bestScore = score;
+              bestI = i;
+              bestFit = {x:r.x, y:r.y, pw, ph, rot};
+            }
+          }
+        }
+      }
+    }
+
+    if (bestI === -1) break;
+
+    const pc = rem[bestI];
+    const {x, y, pw, ph, rot} = bestFit;
+    placed.push({x, y, w:pw, h:ph, label:pc.label,
+                 pieceIndex:pc.pieceIndex, instanceIndex:pc.instanceIndex, rotated:rot});
+    rem.splice(bestI, 1);
+    improved = true;
+
+    // Split all free rects that overlap the placed piece (plus kerf)
+    const kw = pw + (x + pw + KERF <= sheetW ? KERF : 0);
+    const kh = ph + (y + ph + KERF <= sheetH ? KERF : 0);
+    const kx = x, ky = y;
+    const placedBox = { x: kx, y: ky, w: kw, h: kh };
+    const newFree = [];
+    for (const r of free) {
+      if (rectIntersects(r, placedBox)) {
+        newFree.push(...splitFreeRect(r, kx, ky, kw, kh));
+      } else {
+        newFree.push(r);
+      }
+    }
+    free = pruneFreeRects(newFree);
+  }
+
+  const area = placed.reduce((s, p) => s + p.w * p.h, 0);
+  const sheetArea = sheetW * sheetH;
+  return {
+    placed, unplaced: rem,
+    wastePercent: Math.round((1 - area / sheetArea) * 100),
+    sheetW, sheetH, sheetArea
+  };
+}
+
+// Run packing with multiple piece orderings, pick best result for this sheet
+function packSheetBest(sheetW, sheetH, queue) {
+  const sorters = [
+    q => [...q].sort((a,b) => b.w*b.h - a.w*a.h),                    // largest area first
+    q => [...q].sort((a,b) => Math.max(b.w,b.h) - Math.max(a.w,a.h)), // longest side first
+    q => [...q].sort((a,b) => Math.min(b.w,b.h) - Math.min(a.w,a.h)), // widest short side
+    q => [...q].sort((a,b) => b.w - a.w),                              // widest first
+    q => [...q].sort((a,b) => b.h - a.h),                              // tallest first
+    q => [...q].sort((a,b) => (b.w+b.h) - (a.w+a.h)),                 // largest perimeter
+    q => [...q].sort((a,b) => Math.abs(b.w-b.h) - Math.abs(a.w-a.h)), // most elongated first
+    q => [...q].sort((a,b) => Math.abs(a.w-a.h) - Math.abs(b.w-b.h)), // most square first
+  ];
+  let best = null;
+  for (const sortFn of sorters) {
+    const result = maxRectsPack(sheetW, sheetH, sortFn(queue));
+    if (!best ||
+        result.placed.length > best.placed.length ||
+        (result.placed.length === best.placed.length &&
+         result.wastePercent < best.wastePercent)) {
+      best = result;
+    }
+  }
+  return best;
+}
+
+// Estimate minimum sheets still needed for remaining pieces (lower bound)
+function estimateRemaining(queue, sizes) {
+  if (!queue.length) return 0;
+  const totalArea = queue.reduce((s, p) => s + p.w * p.h, 0);
+  const bestSheetArea = Math.max(...sizes.map(sz => sz.w * sz.h));
+  return totalArea / bestSheetArea;
+}
+
+function runMat(libMat, pieces) {
+  // Expand pieces by quantity
+  let queue = [];
+  pieces.forEach((p, pi) => {
+    for (let q = 0; q < p.qty; q++)
+      queue.push({...p, pieceIndex:pi, instanceIndex:q});
+  });
+
+  const sizes = [
+    libMat.size1,
+    libMat.size2 && libMat.size2.w && libMat.size2.h ? libMat.size2 : null
+  ].filter(Boolean);
+
+  const largestSheetArea = Math.max(...sizes.map(sz => sz.w * sz.h));
+  const sheets = [];
+  let limit = 150;
+
+  while (queue.length > 0 && limit-- > 0) {
+    let bestChoice = null;
+    let bestScore = Infinity;
+
+    for (const sz of sizes) {
+      const r = packSheetBest(sz.w, sz.h, queue);
+      if (!r.placed.length) continue;
+
+      // Score = estimated sheets still needed after this choice
+      // + tiny penalty for using a large sheet vs small (prefer small when equal)
+      const estRemaining = estimateRemaining(r.unplaced, sizes);
+      const sheetSizePenalty = (sz.w * sz.h) / largestSheetArea * 0.01;
+      const score = estRemaining + sheetSizePenalty;
+
+      if (!bestChoice || score < bestScore ||
+          (score === bestScore && r.placed.length > bestChoice.placed.length)) {
+        bestChoice = r;
+        bestScore = score;
+      }
+    }
+
+    if (!bestChoice || !bestChoice.placed.length) break;
+
+    sheets.push(bestChoice);
+    const done = new Set(
+      bestChoice.placed.map(p => `${p.pieceIndex}-${p.instanceIndex}`)
+    );
+    queue = queue.filter(p => !done.has(`${p.pieceIndex}-${p.instanceIndex}`));
+  }
+
+  const sizeMap = {};
+  sheets.forEach(s => {
+    const k = `${s.sheetW}\u00d7${s.sheetH}`;
+    sizeMap[k] = (sizeMap[k] || 0) + 1;
+  });
+  return {sheets, unplaced:queue, sizeMap};
+}
+
+// ── CALCULATE ─────────────────────────────────
+function calculate() {
+  document.getElementById('err-box').style.display='none';
+  document.getElementById('output').style.display='none';
+
+  const errors = [];
+  const results = [];
+
+  for (const m of mats) {
+    const libMat = library.find(l => l.id == m.selectedMatId);
+    if (!libMat) { errors.push(`Material ${mats.indexOf(m)+1}: Please select a material.`); continue; }
+    const valid = m.pieces.filter(p=>p.w>0&&p.h>0&&p.qty>0);
+    if (!valid.length) { errors.push(`Material ${mats.indexOf(m)+1} (${libMat.name}): Please add at least one piece.`); continue; }
+
+    // check pieces fit
+    const sizes = [libMat.size1, libMat.size2&&libMat.size2.w&&libMat.size2.h?libMat.size2:null].filter(Boolean);
+    for (const p of valid) {
+      const fits = sizes.some(sz=>(p.w<=sz.w&&p.h<=sz.h)||(p.h<=sz.w&&p.w<=sz.h));
+      if (!fits) { errors.push(`"${p.label||p.w+'×'+p.h}mm" is too large for all sheet sizes in ${libMat.name}.`); }
+    }
+    const res = runMat(libMat, valid);
+    results.push({ libMat, ...res });
+  }
+
+  if (errors.length) { showErr(errors.join(' | ')); return; }
+  calcResult = { results };
+  renderOutput();
+}
+
+function showErr(msg) {
+  const b = document.getElementById('err-box');
+  b.textContent = msg; b.style.display = 'block';
+}
+
+// ── RENDER OUTPUT ─────────────────────────────
+function renderOutput() {
+  document.getElementById('output').style.display='block';
+  const {results} = calcResult;
+  const quoteLines = [];
+
+  // Pricing cards
+  document.getElementById('pricing-cards').innerHTML = results.map(({libMat, sheets, unplaced, sizeMap}) => {
+    const total = sheets.length;
+    const chips = Object.entries(sizeMap).map(([dim,cnt]) => {
+      quoteLines.push(`${libMat.name}: ${cnt} sheet${cnt>1?'s':''} — ${dim}mm`);
+      return `<div class="pres-size-chip"><b>${cnt}</b> × ${dim}mm</div>`;
+    }).join('');
+
+    return `<div class="pres-card">
+      <div class="pres-left">
+        <div class="pres-name">${libMat.name}<span class="pres-thk">${libMat.thickness||''}</span></div>
+        <div class="pres-sizes">${chips || '<span style="color:var(--red);font-size:13px">No pieces placed</span>'}</div>
+        ${unplaced.length ? `<div class="pres-warn">⚠ ${unplaced.length} piece(s) could not be placed</div>` : ''}
+      </div>
+      <div class="pres-right">
+        <div style="text-align:center">
+          <div class="pres-count">${total}</div>
+          <div class="pres-unit">sheet${total!==1?'s':''}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  window._quoteText = quoteLines.join('\n');
+
+  // Stats
+  const totalSheets = results.reduce((s,r)=>s+r.sheets.length,0);
+  const totalPlaced = results.reduce((s,r)=>s+r.sheets.reduce((a,sh)=>a+sh.placed.length,0),0);
+  const totalUnplaced = results.reduce((s,r)=>s+r.unplaced.length,0);
+  const wastes = results.flatMap(r=>r.sheets.map(sh=>sh.wastePercent));
+  const avgWaste = wastes.length ? Math.round(wastes.reduce((a,b)=>a+b,0)/wastes.length) : 0;
+  document.getElementById('s-sheets').textContent = totalSheets;
+  document.getElementById('s-placed').textContent = totalPlaced;
+  const su=document.getElementById('s-unplaced'); su.textContent=totalUnplaced; su.style.color=totalUnplaced>0?'var(--red)':'var(--green)';
+  const sw=document.getElementById('s-waste'); sw.textContent=avgWaste+'%'; sw.style.color=avgWaste>30?'var(--red)':'var(--navy)';
+
+  // Per-material visuals
+  const visWrap = document.getElementById('mat-visuals');
+  visWrap.innerHTML='';
+  const MAX_W=500, MAX_H=220;
+
+  results.forEach(({libMat, sheets, unplaced}) => {
+    const sec = document.createElement('div');
+    sec.className = 'detail-section';
+    let html = `<div class="ds-title"><div class="ds-bar"></div>${libMat.name} — ${sheets.length} sheet${sheets.length!==1?'s':''}</div>`;
+
+    sheets.forEach((sh, si) => {
+      const scale = Math.min(MAX_W/sh.sheetW, MAX_H/sh.sheetH, 0.28);
+      const cw=Math.round(sh.sheetW*scale), ch=Math.round(sh.sheetH*scale);
+      html += `<div class="sheet-vis">
+        <div class="sv-title">
+          Sheet ${si+1} &nbsp;·&nbsp; ${sh.sheetW}×${sh.sheetH}mm
+          &nbsp;·&nbsp; ${sh.placed.length} piece${sh.placed.length!==1?'s':''}
+          &nbsp;·&nbsp; <span style="color:${sh.wastePercent>30?'var(--red)':'var(--green)'}">${sh.wastePercent}% waste</span>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start">
+          <div class="sheet-canvas" style="width:${cw}px;height:${ch}px">
+            ${sh.placed.map(p=>{
+              const col=COLORS[p.pieceIndex%COLORS.length];
+              const show=p.w*scale>28&&p.h*scale>14;
+              return `<div class="piece-rect" style="left:${p.x*scale}px;top:${p.y*scale}px;width:${p.w*scale-1}px;height:${p.h*scale-1}px;background:${col}cc;border:1.5px solid ${col}">
+                ${show?`<div class="plbl" style="font-size:${Math.min(11,p.w*scale/6)}px">${p.label||'P'+(p.pieceIndex+1)}${p.rotated?'↻':''}<br><span style="font-weight:400;font-size:.82em;opacity:.85">${p.w}×${p.h}</span></div>`:''}
+              </div>`;
+            }).join('')}
+          </div>
+          <div style="flex:1;min-width:120px">
+            ${sh.placed.map(p=>`<div class="legend-item"><div class="ldot" style="background:${COLORS[p.pieceIndex%COLORS.length]}"></div>${p.label||'P'+(p.pieceIndex+1)} — ${p.w}×${p.h}mm${p.rotated?' ↻':''}</div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    });
+
+    if (unplaced.length) html += `<div class="warn">⚠ Unplaced: ${unplaced.map(p=>p.label||p.w+'×'+p.h+'mm').join(', ')}</div>`;
+    sec.innerHTML = html;
+    visWrap.appendChild(sec);
+  });
+
+  // Full table
+  let rows='';
+  results.forEach(({libMat, sheets}) => {
+    sheets.forEach((sh,si)=>{
+      sh.placed.forEach(p=>{
+        rows+=`<tr>
+          <td style="font-weight:600;color:var(--navy);font-size:12px">${libMat.name}</td>
+          <td style="color:var(--muted)">${si+1}</td>
+          <td style="color:var(--muted);font-size:12px">${sh.sheetW}×${sh.sheetH}</td>
+          <td><div style="display:flex;align-items:center;gap:5px"><div style="width:9px;height:9px;border-radius:2px;background:${COLORS[p.pieceIndex%COLORS.length]};flex-shrink:0"></div>${p.label||'P'+(p.pieceIndex+1)}</div></td>
+          <td style="color:var(--muted)">${p.w}</td><td style="color:var(--muted)">${p.h}</td>
+          <td style="color:var(--muted)">${p.x}</td><td style="color:var(--muted)">${p.y}</td>
+          <td style="color:${p.rotated?'var(--ora)':'var(--muted)'}">${p.rotated?'Yes ↻':'No'}</td>
+        </tr>`;
+      });
+    });
+  });
+  document.getElementById('placement-body').innerHTML = rows;
+  document.getElementById('output').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── COPY & EXPORT ─────────────────────────────
+function copyQuote() {
+  navigator.clipboard.writeText(window._quoteText||'').then(()=>{
+    const b=document.getElementById('copy-btn');
+    b.textContent='✓ Copied!'; b.classList.add('copied');
+    setTimeout(()=>{ b.textContent='📋 Copy summary for quote'; b.classList.remove('copied'); },2000);
+  });
+}
+function exportBC() {
+  if (!calcResult) return;
+  // Build one row per sheet size used, with BC item number
+  const rows = [
+    ['Type','No.','Description','Quantity per','Unit of Measure Code'],
+  ];
+  // Aggregate: count sheets per material + size
+  calcResult.results.forEach(({libMat, sizeMap, sheets}) => {
+    Object.entries(sizeMap).forEach(([dim, count]) => {
+      // Find which size this is
+      const [sw, sh] = dim.split('×').map(Number);
+      let bc = '';
+      let desc = '';
+      if (libMat.size1 && libMat.size1.w === sw && libMat.size1.h === sh) {
+        bc = libMat.size1.bc || '';
+        desc = `${libMat.size1.w} X ${libMat.size1.h} X ${libMat.thickness} ${libMat.material.toUpperCase()} SHEET${libMat.grade?' '+libMat.grade.toUpperCase():''}`;
+      } else if (libMat.size2 && libMat.size2.w === sw && libMat.size2.h === sh) {
+        bc = libMat.size2.bc || '';
+        desc = `${libMat.size2.w} X ${libMat.size2.h} X ${libMat.thickness} ${libMat.material.toUpperCase()} SHEET${libMat.grade?' '+libMat.grade.toUpperCase():''}`;
+      }
+      rows.push(['Item', bc, desc, count, 'SHEET']);
+    });
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+  a.download = `BC-import-${Date.now()}.csv`;
+  a.click();
+}
+
+function exportCSV() {
+  if (!calcResult) return;
+  const rows = [
+    [`Dacon OptiCutter — ${new Date().toLocaleDateString()}`],[`Blade Kerf: ${KERF}mm`],[],
+    ['SHEET USAGE SUMMARY'],
+    ...calcResult.results.flatMap(({libMat,sizeMap})=>Object.entries(sizeMap).map(([dim,c])=>[`${c}x ${libMat.name} ${dim}mm`])),
+    [],['PLACEMENT DETAIL'],
+    ['Material','Sheet #','Sheet Size','Label','W','H','X','Y','Rotated'],
+    ...calcResult.results.flatMap(({libMat,sheets})=>sheets.flatMap((sh,si)=>sh.placed.map(p=>[libMat.name,si+1,`${sh.sheetW}x${sh.sheetH}`,p.label||`P${p.pieceIndex+1}`,p.w,p.h,p.x,p.y,p.rotated?'Yes':'No']))),
+  ];
+  const unplAll=calcResult.results.flatMap(({libMat,unplaced})=>unplaced.map(p=>[libMat.name,p.label||'?',p.w,p.h]));
+  if(unplAll.length){rows.push([],['UNPLACED'],['Material','Label','W','H'],...unplAll);}
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'}));
+  a.download=`dacon-cut-list-${Date.now()}.csv`; a.click();
+}
+
+// ── LIBRARY MODAL ─────────────────────────────
+function openLib() {
+  pending=library.map(e=>({...e,size1:{...e.size1},size2:{...e.size2||{w:'',h:'',bc:''}}}));
+  renderLibEntries();
+  document.getElementById('lib-modal').style.display='flex';
+}
+function closeLib() { document.getElementById('lib-modal').style.display='none'; }
+async function saveLibClose() {
+  flushEditForms();
+  library = pending.map(e => ({
+    ...e,
+    size1: {...e.size1},
+    size2: {...(e.size2||{w:'',h:''})}
+  }));
+  await persistLib(library);
+  renderAll();
+  closeLib();
+}
+function renderLibEntries() {
+  const wrap=document.getElementById('lib-entries');
+  if(!pending.length){wrap.innerHTML='<p style="color:var(--muted);font-size:13px;margin-bottom:12px">No materials yet. Add one below.</p>';return;}
+  wrap.innerHTML=pending.map(e=>`
+    <div class="lib-entry">
+      <div class="le-hdr">
+        <div><div class="le-name">${e.name}</div><div class="le-meta">${e.material||''}${e.thickness?' · '+e.thickness:''}</div></div>
+        <div style="display:flex;gap:7px;align-items:center">
+          <button class="btn-sm-bl" onclick="toggleEdit(${e.id})">Edit</button>
+          <button class="btn-del" onclick="delPending(${e.id})">✕</button>
+        </div>
+      </div>
+      <div id="ev-${e.id}">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+          <div class="sz-badge"><span class="sl">Size 1${e.size1.bc?' · '+e.size1.bc:''}</span><span class="sv">${e.size1.w} × ${e.size1.h} mm</span></div>
+          ${e.size2&&e.size2.w&&e.size2.h
+            ? `<div class="sz-badge"><span class="sl">Size 2${e.size2.bc?' · '+e.size2.bc:''}</span><span class="sv">${e.size2.w} × ${e.size2.h} mm</span></div>`
+            : `<div class="sz-badge" style="opacity:.4"><span class="sl">Size 2</span><span class="sv" style="color:var(--muted)">Not set</span></div>`}
+        </div>
+      </div>
+      <div id="ee-${e.id}" style="display:none">
+        <div class="edit-basic mt8">
+          <div class="edit-basic-grid">
+            <div><label class="lbl">Name</label><input type="text" value="${e.name}" oninput="upd(${e.id},'name',this.value)"/></div>
+            <div><label class="lbl">Material</label><input type="text" value="${e.material||''}" oninput="upd(${e.id},'material',this.value)"/></div>
+            <div><label class="lbl">Thickness</label><input type="text" value="${e.thickness||''}" oninput="upd(${e.id},'thickness',this.value)"/></div>
+          </div>
+        </div>
+        <div class="sizes-edit">
+          <div class="se-box"><div class="se-title">📐 Size 1</div><div class="se-inputs" style="grid-template-columns:1fr 1fr 1fr">
+            <div><label class="lbl">W (mm)</label><input type="number" value="${e.size1.w}" oninput="updSz(${e.id},1,'w',+this.value)"/></div>
+            <div><label class="lbl">H (mm)</label><input type="number" value="${e.size1.h}" oninput="updSz(${e.id},1,'h',+this.value)"/></div>
+            <div><label class="lbl">BC Item No.</label><input type="text" value="${e.size1.bc||''}" placeholder="e.g. STE-1004" oninput="updSz(${e.id},1,'bc',this.value)"/></div>
+          </div></div>
+          <div class="se-box"><div class="se-title">📐 Size 2</div><div class="se-inputs" style="grid-template-columns:1fr 1fr 1fr">
+            <div><label class="lbl">W (mm)</label><input type="number" value="${e.size2&&e.size2.w||''}" placeholder="optional" oninput="updSz(${e.id},2,'w',+this.value)"/></div>
+            <div><label class="lbl">H (mm)</label><input type="number" value="${e.size2&&e.size2.h||''}" placeholder="optional" oninput="updSz(${e.id},2,'h',+this.value)"/></div>
+            <div><label class="lbl">BC Item No.</label><input type="text" value="${e.size2&&e.size2.bc||''}" placeholder="optional" oninput="updSz(${e.id},2,'bc',this.value)"/></div>
+          </div></div>
+        </div>
+        <div style="text-align:right;margin-top:9px"><button class="btn-sm-gr" onclick="toggleEdit(${e.id})">✓ Done</button></div>
+      </div>
+    </div>`).join('');
+}
+// Sweep all open edit forms and flush their current DOM values into pending
+// This ensures values are captured even if the user never blurred a field
+function flushEditForms() {
+  pending.forEach(e => {
+    const ed = document.getElementById(`ee-${e.id}`);
+    if (!ed || ed.style.display === 'none') return;
+    // text fields
+    const nameEl  = ed.querySelector('input[type=text]:nth-of-type(1)');
+    const matEl   = ed.querySelector('input[type=text]:nth-of-type(2)');
+    const thkEl   = ed.querySelector('input[type=text]:nth-of-type(3)');
+    if (nameEl)  e.name      = nameEl.value.trim()  || e.name;
+    if (matEl)   e.material  = matEl.value.trim();
+    if (thkEl)   e.thickness = thkEl.value.trim();
+    // number fields — grab by position in the edit form
+    const nums = ed.querySelectorAll('input[type=number]');
+    if (nums[0] && nums[0].value !== '') e.size1.w = +nums[0].value;
+    if (nums[1] && nums[1].value !== '') e.size1.h = +nums[1].value;
+    if (!e.size2) e.size2 = {w:'', h:''};
+    if (nums[2] && nums[2].value !== '') e.size2.w = +nums[2].value;
+    if (nums[3] && nums[3].value !== '') e.size2.h = +nums[3].value;
+  });
+}
+
+function toggleEdit(id) {
+  flushEditForms();
+  const ed=document.getElementById(`ee-${id}`), vw=document.getElementById(`ev-${id}`);
+  const o=ed.style.display!=='none';
+  ed.style.display=o?'none':'block';
+  vw.style.display=o?'block':'none';
+  // Re-render view side so it shows updated values
+  if (o) renderLibEntries();
+}
+function upd(id,f,v){const e=pending.find(x=>x.id===id);if(e)e[f]=v;}
+function updSz(id,n,d,v){const e=pending.find(x=>x.id===id);if(!e)return;const k=n===1?'size1':'size2';if(!e[k])e[k]={w:'',h:''};e[k][d]=v;}
+function delPending(id){pending=pending.filter(x=>x.id!==id);renderLibEntries();}
+function addLibEntry(){
+  const name=document.getElementById('n-name').value.trim();
+  const w1=+document.getElementById('n-w1').value, h1=+document.getElementById('n-h1').value;
+  if(!name||!w1||!h1){alert('Name, Size 1 Width and Height are required.');return;}
+  pending.push({
+    id:Date.now(), name,
+    material:document.getElementById('n-mat').value.trim(),
+    thickness:document.getElementById('n-thk').value.trim(),
+    grade:'',
+    size1:{w:w1, h:h1, bc:document.getElementById('n-bc1').value.trim()},
+    size2:{w:+document.getElementById('n-w2').value||'', h:+document.getElementById('n-h2').value||'', bc:document.getElementById('n-bc2').value.trim()}
+  });
+  ['n-name','n-mat','n-thk','n-w1','n-h1','n-bc1','n-w2','n-h2','n-bc2'].forEach(id=>document.getElementById(id).value='');
+  renderLibEntries();
+}
+
+// ── ENTER KEY NAVIGATION ──────────────────────
+// Pressing Enter in any input moves focus to the next visible input on the page.
+// Pressing Enter in the last input of a pieces row adds a new piece for that material.
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  const tag = e.target.tagName;
+  if (tag !== 'INPUT') return;
+  e.preventDefault();
+
+  // Collect all visible, enabled inputs on the page
+  const all = Array.from(document.querySelectorAll('input:not([disabled]):not([type=hidden])'))
+    .filter(el => {
+      if (el.offsetParent === null) return false; // hidden
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+
+  const idx = all.indexOf(e.target);
+  if (idx === -1) return;
+
+  const next = all[idx + 1];
+  if (next) {
+    next.focus();
+    next.select();
+  } else {
+    // Reached the last input — if it's in a pieces row, add a new piece
+    // Find which mat block the current input belongs to
+    const block = e.target.closest('.mat-block');
+    if (block) {
+      const id = block.id.replace('block-', '');
+      addPiece(id);
+      // After render, focus the first input of the new row
+      setTimeout(() => {
+        const newAll = Array.from(document.querySelectorAll('input:not([disabled])'))
+          .filter(el => el.offsetParent !== null);
+        const lastInputs = newAll.filter(el => el.closest(`#block-${id}`));
+        if (lastInputs.length) lastInputs[lastInputs.length - 3].focus();
+      }, 50);
+    }
+  }
+});
+
+// ── INIT ──────────────────────────────────────
+loadLib();
+</script>
+</body>
+</html>
