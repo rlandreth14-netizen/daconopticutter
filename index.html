@@ -838,53 +838,7 @@ function runMat(libMat, pieces) {
   return { sheets, unplaced: queue, sizeMap };
 }
 
-  // ── Cost-aware scoring ──────────────────────────────
-  // Score = cost of THIS sheet + estimated cost of remaining pieces
-  // This correctly balances small vs large sheets using actual £ prices.
-  //
-  // Key insight: 2 small sheets (2×£118=£236) > 1 large (£205)
-  // So we only choose small when it genuinely saves total job cost.
-  //
-  // If no prices are set, fall back to piece-count lookahead.
-  let score;
-  if (sheetPrice > 0) {
-    const estRemCost = estimateRemainingCost(r.unplaced, sizes);
-    score = sheetPrice + estRemCost;
-  } else {
-    // No prices — use area-based sheet count estimate with tiny size tiebreak
-    const remArea = r.unplaced.reduce((s,p) => s+p.w*p.h, 0);
-    const bestArea = Math.max(...sizes.map(s => s.w*s.h));
-    const estSheets = remArea / (bestArea * 0.72);
-    score = estSheets + (sz.w*sz.h)/largestSheetArea * 0.01;
-  }
-
-  if (!bestChoice || score < bestScore ||
-      (score === bestScore && r.placed.length > bestChoice.placed.length)) {
-    bestChoice = r;
-    bestScore = score;
-  }
-}
-
-    if (!bestChoice || !bestChoice.placed.length) break;
-
-    sheets.push(bestChoice);
-    const done = new Set(
-      bestChoice.placed.map(p => `${p.pieceIndex}-${p.instanceIndex}`)
-    );
-    queue = queue.filter(p => !done.has(`${p.pieceIndex}-${p.instanceIndex}`));
-  }
-
-  const sizeMap = {};
-  sheets.forEach(s => {
-    const k = `${s.sheetW}×${s.sheetH}`;
-    sizeMap[k] = (sizeMap[k] || 0) + 1;
-  });
-
-  return { sheets, unplaced: queue, sizeMap };
-  }
-
-
-// ── CALCULATE ─────────────────────────────────
+\\ ── CALCULATE ─────────────────────────────────
 function calculate() {
   document.getElementById('err-box').style.display='none';
   document.getElementById('output').style.display='none';
